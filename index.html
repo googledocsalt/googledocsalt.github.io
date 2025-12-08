@@ -1,1 +1,172 @@
-docs coming soon
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Docs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://www.gstatic.com/images/branding/product/1x/docs_2020q4_48dp.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: #0f1115;
+      color: #ffffff;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 32px 20px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      margin-top: 8px;
+      color: #9aa0aa;
+      font-size: 0.95rem;
+    }
+
+    .games-wrapper {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 18px;
+    }
+
+    .game-card {
+      background: #161922;
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+    }
+
+    .game-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+    }
+
+    .game-thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: linear-gradient(135deg, #2b2f3a, #1b1f2a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: #6f77ff;
+    }
+
+    .game-info {
+      padding: 12px 14px 16px;
+    }
+
+    .game-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .game-meta {
+      font-size: 0.75rem;
+      color: #9aa0aa;
+    }
+
+    footer {
+      text-align: center;
+      padding: 28px 16px 20px;
+      color: #7f8694;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 500px) {
+      header h1 { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Unblocked Games</h1>
+    <p>Instant play. No limits. Just games.</p>
+  </header>
+
+  <main class="games-wrapper">
+    <div class="games-grid">
+
+      <!-- GAME CARD -->
+      <div class="game-card" onclick="alert('Launch Game 1')">
+        <div class="game-thumb">🎮</div>
+        <div class="game-info">
+          <div class="game-title">Slope</div>
+          <div class="game-meta">Arcade</div>
+        </div>
+      </div>
+
+      <div class="game-card" onclick="alert('Launch Game 2')">
+        <div class="game-thumb">🚗</div>
+        <div class="game-info">
+          <div class="game-title">Drift Hunters</div>
+          <div class="game-meta">Racing</div>
+        </div>
+      </div>
+
+      <div class="game-card" onclick="alert('Launch Game 3')">
+        <div class="game-thumb">🔫</div>
+        <div class="game-info">
+          <div class="game-title">Shell Shockers</div>
+          <div class="game-meta">Shooter</div>
+        </div>
+      </div>
+
+      <div class="game-card" onclick="alert('Launch Game 4')">
+        <div class="game-thumb">🧠</div>
+        <div class="game-info">
+          <div class="game-title">2048</div>
+          <div class="game-meta">Puzzle</div>
+        </div>
+      </div>
+
+      <div class="game-card" onclick="alert('Launch Game 5')">
+        <div class="game-thumb">⚔️</div>
+        <div class="game-info">
+          <div class="game-title">Zombs Royale</div>
+          <div class="game-meta">Battle Royale</div>
+        </div>
+      </div>
+
+      <div class="game-card" onclick="alert('Launch Game 6')">
+        <div class="game-thumb">🏀</div>
+        <div class="game-info">
+          <div class="game-title">Basket Random</div>
+          <div class="game-meta">Sports</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</body>
+  <script>
+    window.addEventListener('load', () => {
+      alert('Notice: All games on this page are only templates and do not actually work yet.');
+    });
+  </script>
+</html>
