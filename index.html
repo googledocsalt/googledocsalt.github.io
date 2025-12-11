@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Docs</title>
+  <title>Docs</title> <!-- keeping your original title -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="https://www.gstatic.com/images/branding/product/1x/docs_2020q4_48dp.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-   * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: "Inter", sans-serif;
@@ -54,6 +56,7 @@
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+      position: relative;
     }
 
     .game-card:hover {
@@ -64,12 +67,26 @@
     .game-thumb {
       width: 100%;
       aspect-ratio: 1 / 1;
-      background: linear-gradient(135deg, #2b2f3a, #1b1f2a);
+      background: #222;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: rgba(0,0,0,0.4);
+      opacity: 0;
       font-size: 3rem;
-      color: #6f77ff;
+      transition: 0.2s ease;
+    }
+
+    .game-card:hover .play-overlay {
+      opacity: 1;
     }
 
     .game-info {
@@ -90,83 +107,191 @@
       color: #9aa0aa;
     }
 
-    footer {
-      text-align: center;
-      padding: 28px 16px 20px;
-      color: #7f8694;
-      font-size: 0.8rem;
+    /* Popup Modal */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
     }
 
-    @media (max-width: 500px) {
-      header h1 { font-size: 1.7rem; }
+    .modal-window {
+      width: 90%;
+      max-width: 1000px;
+      height: 80%;
+      background: #181b24;
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
+    }
+
+    .modal-header {
+      padding: 12px 18px;
+      background: #20232d;
+      border-bottom: 1px solid #2a2f3a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .close-btn {
+      cursor: pointer;
+      font-size: 1.3rem;
+    }
+
+    .game-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #000;
+    }
+
+    .modal-footer {
+      padding: 10px;
+      background: #20232d;
+      border-top: 1px solid #2a2f3a;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .modal-footer button {
+      background: #2c3040;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .modal-footer button:hover {
+      background: #393f55;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Unblocked Games</h1>
-    <p>Instant play. No limits. Just games.</p>
-  </header>
+<header>
+  <h1>Unblocked Games</h1>
+  <p>Instant play. No limits. Just games.</p>
+</header>
 
-  <main class="games-wrapper">
-    <div class="games-grid">
+<main class="games-wrapper">
+  <div class="games-grid"></div>
+</main>
 
-      <!-- GAME CARD -->
-      <div class="game-card" onclick="alert('Launch Game 1')">
-        <div class="game-thumb">🎮</div>
-        <div class="game-info">
-          <div class="game-title">Slope</div>
-          <div class="game-meta">Arcade</div>
-        </div>
-      </div>
+<script>
+const githubUser = "googledocsalt";
+const githubRepo = "googledocsalt.github.io";
+const githubBranch = "main";
+const gamesFolder = "assets";
 
-      <div class="game-card" onclick="alert('Launch Game 2')">
-        <div class="game-thumb">🚗</div>
-        <div class="game-info">
-          <div class="game-title">Drift Hunters</div>
-          <div class="game-meta">Racing</div>
-        </div>
-      </div>
+// Convert "Drift Hunters" -> "drift-hunters"
+const slugify = (str) =>
+  str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
-      <div class="game-card" onclick="alert('Launch Game 3')">
-        <div class="game-thumb">🔫</div>
-        <div class="game-info">
-          <div class="game-title">Shell Shockers</div>
-          <div class="game-meta">Shooter</div>
-        </div>
-      </div>
+// Try local -> GitHub -> fallback
+async function findThumbnail(slug) {
+  const possible = ["png", "jpg", "jpeg", "webp"];
 
-      <div class="game-card" onclick="alert('Launch Game 4')">
-        <div class="game-thumb">🧠</div>
-        <div class="game-info">
-          <div class="game-title">2048</div>
-          <div class="game-meta">Puzzle</div>
-        </div>
-      </div>
+  for (const ext of possible) {
+    const local = `${gamesFolder}/${slug}.${ext}`;
+    try {
+      const res = await fetch(local);
+      if (res.ok) return local;
+    } catch {}
+  }
 
-      <div class="game-card" onclick="alert('Launch Game 5')">
-        <div class="game-thumb">⚔️</div>
-        <div class="game-info">
-          <div class="game-title">Zombs Royale</div>
-          <div class="game-meta">Battle Royale</div>
-        </div>
-      </div>
+  for (const ext of possible) {
+    const git = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${githubBranch}/assets/${slug}.${ext}`;
+    try {
+      const res = await fetch(git);
+      if (res.ok) return git;
+    } catch {}
+  }
 
-      <div class="game-card" onclick="alert('Launch Game 6')">
-        <div class="game-thumb">🏀</div>
-        <div class="game-info">
-          <div class="game-title">Basket Random</div>
-          <div class="game-meta">Sports</div>
-        </div>
-      </div>
+  return "https://via.placeholder.com/300x300?text=No+Image";
+}
 
-    </div>
-  </main>
-</body>
-  <script>
-    window.addEventListener('load', () => {
-      alert('Notice: All games on this page are only templates and do not actually work yet.');
+// Load all HTML game files from GitHub
+async function loadGameFiles() {
+  const api = `https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${gamesFolder}`;
+  const res = await fetch(api);
+  const files = await res.json();
+
+  return files
+    .filter(f => f.name.endsWith(".html"))
+    .map(f => {
+      const slug = f.name.replace(".html", "");
+      const title = slug.replace(/-/g, " ");
+      return { slug, title };
     });
-  </script>
+}
+
+function createGameCard(game, thumb) {
+  return `
+    <div class="game-card" onclick="openGame('${game.slug}', '${game.title}')">
+      <div class="game-thumb" style="background-image:url('${thumb}')">
+        <div class="play-overlay">▶</div>
+      </div>
+      <div class="game-info">
+        <div class="game-title">${game.title}</div>
+        <div class="game-meta">Play Now</div>
+      </div>
+    </div>
+  `;
+}
+
+function openGame(slug, title) {
+  const modal = document.createElement("div");
+  modal.className = "modal-bg";
+  modal.innerHTML = `
+    <div class="modal-window">
+      <div class="modal-header">
+        <span>${title}</span>
+        <span class="close-btn" onclick="this.closest('.modal-bg').remove()">✖</span>
+      </div>
+      <iframe src="assets/${slug}.html" class="game-frame"></iframe>
+      <div class="modal-footer">
+        <button onclick="likeGame('${slug}')">👍 Like</button>
+        <button onclick="fullscreenGame(this)">⛶ Fullscreen</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+function fullscreenGame(btn) {
+  const frame = btn.closest(".modal-window").querySelector(".game-frame");
+  if (frame.requestFullscreen) frame.requestFullscreen();
+}
+
+function likeGame(slug) {
+  const key = "likes_" + slug;
+  const total = (localStorage.getItem(key) || 0) * 1 + 1;
+  localStorage.setItem(key, total);
+  alert(`You liked this game! Total likes: ${total}`);
+}
+
+(async () => {
+  const container = document.querySelector(".games-grid");
+  container.innerHTML = `<div style="color:#888;text-align:center;">Loading games…</div>`;
+
+  const games = await loadGameFiles();
+  container.innerHTML = "";
+
+  for (const g of games) {
+    const thumb = await findThumbnail(g.slug);
+    container.innerHTML += createGameCard(g, thumb);
+  }
+})();
+</script>
+
+</body>
 </html>
