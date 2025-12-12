@@ -10,196 +10,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-    body {
-      font-family: "Inter", sans-serif;
-      background: #0f1115;
-      color: #ffffff;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-    #stars {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      display: block;
-      pointer-events: none;
-    }
-    .site {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-    }
-    header {
-      padding: 32px 20px 20px;
-      text-align: center;
-    }
-    header h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-    header p {
-      margin-top: 8px;
-      color: #9aa0aa;
-      font-size: 0.95rem;
-    }
-    .games-wrapper {
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 18px;
-    }
-    .game-card {
-      background: #161922;
-      border-radius: 18px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.25);
-      position: relative;
-    }
-    .game-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.4);
-    }
-    .game-thumb {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: #222;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-    }
-    .play-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.4);
-      opacity: 0;
-      font-size: 3rem;
-      transition: 0.2s ease;
-      color: #fff;
-    }
-    .game-card:hover .play-overlay {
-      opacity: 1;
-    }
-    .game-info {
-      padding: 12px 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .game-title {
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .meta-col {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      min-width: 60px;
-    }
-    .game-meta {
-      font-size: 0.75rem;
-      color: #9aa0aa;
-    }
-    .likes {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.03);
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 0.85rem;
-      color: #ffffff;
-      font-weight: 600;
-    }
-    .likes .heart {
-      color: #ff6b6b;
-      font-size: 1rem;
-      line-height: 1;
-      margin-left: -2px;
-    }
-    .modal-bg {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .modal-window {
-      width: 90%;
-      max-width: 1000px;
-      height: 80%;
-      background: #181b24;
-      border-radius: 18px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 0 30px rgba(0,0,0,0.6);
-    }
-    .modal-header {
-      padding: 12px 18px;
-      background: #20232d;
-      border-bottom: 1px solid #2a2f3a;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-    }
-    .close-btn {
-      cursor: pointer;
-      font-size: 1.3rem;
-    }
-    .game-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background: #000;
-    }
-    .modal-footer {
-      padding: 10px;
-      background: #20232d;
-      border-top: 1px solid #2a2f3a;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .modal-footer .left {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .modal-footer button {
-      background: #2c3040;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 10px;
-      color: white;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .modal-footer button:hover {
-      background: #393f55;
-    }
-    @media (max-width:420px) {
-      .meta-col { min-width: 48px; }
-      .game-title { font-size: 0.9rem; }
-    }
+    html { height: 100%; background: #0f1115; }
+    body { height: 100%; font-family: "Inter", sans-serif; background: transparent; color: #ffffff; min-height: 100vh; overflow-x: hidden; }
+    #stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: block; }
+    .site { position: relative; z-index: 1; min-height: 100vh; }
+    header { padding: 32px 20px 20px; text-align: center; }
+    header h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.5px; }
+    header p { margin-top: 8px; color: #9aa0aa; font-size: 0.95rem; }
+    .games-wrapper { max-width: 1300px; margin: 0 auto; padding: 20px; }
+    .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 18px; }
+    .game-card { background: rgba(22,25,34,0.9); border-radius: 18px; overflow: hidden; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 6px 18px rgba(0,0,0,0.25); position: relative; }
+    .game-card:hover { transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0,0,0,0.4); }
+    .game-thumb { width: 100%; aspect-ratio: 1 / 1; background: #222; background-size: cover; background-position: center; position: relative; }
+    .play-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); opacity: 0; font-size: 3rem; transition: 0.2s ease; color: #fff; }
+    .game-card:hover .play-overlay { opacity: 1; }
+    .game-info { padding: 12px 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .game-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .meta-col { display: flex; flex-direction: column; align-items: flex-end; min-width: 60px; }
+    .game-meta { font-size: 0.75rem; color: #9aa0aa; }
+    .likes { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.03); padding: 6px 10px; border-radius: 999px; font-size: 0.85rem; color: #ffffff; font-weight: 600; }
+    .likes .heart { color: #ff6b6b; font-size: 1rem; line-height: 1; margin-left: -2px; }
+    .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-window { width: 90%; max-width: 1000px; height: 80%; background: #181b24; border-radius: 18px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.6); }
+    .modal-header { padding: 12px 18px; background: #20232d; border-bottom: 1px solid #2a2f3a; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+    .close-btn { cursor: pointer; font-size: 1.3rem; }
+    .game-frame { width: 100%; height: 100%; border: none; background: #000; }
+    .modal-footer { padding: 10px; background: #20232d; border-top: 1px solid #2a2f3a; display: flex; justify-content: space-between; align-items: center; }
+    .modal-footer .left { display: flex; gap: 8px; align-items: center; }
+    .modal-footer button { background: #2c3040; border: none; padding: 10px 14px; border-radius: 10px; color: white; cursor: pointer; transition: 0.2s; }
+    .modal-footer button:hover { background: #393f55; }
+    @media (max-width:420px) { .meta-col { min-width: 48px; } .game-title { font-size: 0.9rem; } }
   </style>
 </head>
 <body>
@@ -221,40 +61,44 @@
     const countNamespace = "googledocsalt-games";
     const starsCanvas = document.getElementById("stars");
     const dpr = Math.max(1, window.devicePixelRatio || 1);
-    function setupCanvasSize() {
-      starsCanvas.width = innerWidth * dpr;
-      starsCanvas.height = innerHeight * dpr;
-      starsCanvas.style.width = innerWidth + "px";
-      starsCanvas.style.height = innerHeight + "px";
+    let vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    let vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    function setupCanvas() {
+      vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+      starsCanvas.width = Math.round(vw * dpr);
+      starsCanvas.height = Math.round(vh * dpr);
+      starsCanvas.style.width = vw + "px";
+      starsCanvas.style.height = vh + "px";
+      const ctx = starsCanvas.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return ctx;
     }
-    setupCanvasSize();
-    const ctx = starsCanvas.getContext("2d");
-    ctx.scale(dpr, dpr);
+    let ctx = setupCanvas();
     let stars = [];
     function createStars() {
-      const count = Math.round((innerWidth * innerHeight) / 9000);
+      const count = Math.round((vw * vh) / 9000);
       stars = new Array(count).fill(0).map(() => {
         return {
-          x: Math.random() * innerWidth,
-          y: Math.random() * innerHeight,
+          x: Math.random() * vw,
+          y: Math.random() * vh,
           r: Math.random() * 1.4 + 0.3,
-          speed: Math.random() * 0.25 + 0.05,
+          speed: Math.random() * 0.25 + 0.03,
           twinkle: Math.random() * Math.PI * 2
         };
       });
     }
-    function resizeStars() {
-      setupCanvasSize();
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    function resizeHandler() {
+      ctx = setupCanvas();
       createStars();
     }
     function draw() {
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      ctx.clearRect(0, 0, vw, vh);
       for (let i = 0; i < stars.length; i++) {
         const s = stars[i];
         s.y += s.speed;
         s.twinkle += 0.03;
-        if (s.y > innerHeight + 10) s.y = -10;
+        if (s.y > vh + 10) s.y = -10;
         const alpha = 0.55 + Math.sin(s.twinkle) * 0.45;
         ctx.beginPath();
         ctx.fillStyle = `rgba(255,255,255,${alpha})`;
@@ -265,9 +109,7 @@
     }
     createStars();
     draw();
-    addEventListener("resize", () => {
-      resizeStars();
-    });
+    addEventListener("resize", resizeHandler);
     async function findThumbnail(slug) {
       const possible = ["png", "jpg", "jpeg", "webp"];
       for (const ext of possible) {
@@ -291,7 +133,7 @@
       const res = await fetch(api);
       const files = await res.json();
       return files
-        .filter(f => f.name && f.name.endsWith(".html"))
+        .filter(f => f && f.name && f.name.endsWith(".html"))
         .map(f => {
           const slug = f.name.replace(".html", "");
           const title = slug.replace(/-/g, " ");
@@ -311,7 +153,7 @@
               <div class="game-meta">Play Now</div>
             </div>
             <div class="meta-col">
-              <div class="likes"><span class="Likes">👍</span><span class="likes-count">${likes}</span></div>
+              <div class="likes"><span class="heart">❤</span><span class="likes-count">${likes}</span></div>
             </div>
           </div>
         </div>
@@ -330,7 +172,7 @@
           <div class="modal-footer">
             <div class="left">
               <button id="like-btn" onclick="likeGame('${slug}', this)">👍 Like</button>
-              <div class="likes" id="modal-likes"><span class="heart">👍</span><span class="likes-count">...</span></div>
+              <div class="likes" id="modal-likes"><span class="heart">❤</span><span class="likes-count">...</span></div>
             </div>
             <div>
               <button onclick="fullscreenGame(this)">⛶ Fullscreen</button>
