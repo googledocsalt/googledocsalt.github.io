@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Google Docs</title> <!-- keeping your original title -->
+  <title>Google Docs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/e/ec/GDocs_Favicon_Recreation.png">
 
@@ -107,7 +107,6 @@
       color: #9aa0aa;
     }
 
-    /* Popup Modal */
     .modal-bg {
       position: fixed;
       inset: 0;
@@ -192,11 +191,9 @@ const githubRepo = "googledocsalt.github.io";
 const githubBranch = "main";
 const gamesFolder = "assets";
 
-// Convert "Drift Hunters" -> "drift-hunters"
 const slugify = (str) =>
   str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
-// Try local -> GitHub -> fallback
 async function findThumbnail(slug) {
   const possible = ["png", "jpg", "jpeg", "webp"];
 
@@ -219,7 +216,6 @@ async function findThumbnail(slug) {
   return "https://via.placeholder.com/300x300?text=No+Image";
 }
 
-// Load all HTML game files from GitHub
 async function loadGameFiles() {
   const api = `https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${gamesFolder}`;
   const res = await fetch(api);
