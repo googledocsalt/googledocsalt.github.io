@@ -5,50 +5,55 @@
   <title>Google Docs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/e/ec/GDocs_Favicon_Recreation.png">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    html, body { height: 100%; }
     body {
       font-family: "Inter", sans-serif;
       background: #0f1115;
       color: #ffffff;
       min-height: 100vh;
+      overflow-x: hidden;
     }
-
+    #stars {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      display: block;
+      pointer-events: none;
+    }
+    .site {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+    }
     header {
       padding: 32px 20px 20px;
       text-align: center;
     }
-
     header h1 {
       font-size: 2.2rem;
       font-weight: 700;
       letter-spacing: -0.5px;
     }
-
     header p {
       margin-top: 8px;
       color: #9aa0aa;
       font-size: 0.95rem;
     }
-
     .games-wrapper {
       max-width: 1300px;
       margin: 0 auto;
       padding: 20px;
     }
-
     .games-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 18px;
     }
-
     .game-card {
       background: #161922;
       border-radius: 18px;
@@ -58,12 +63,10 @@
       box-shadow: 0 6px 18px rgba(0,0,0,0.25);
       position: relative;
     }
-
     .game-card:hover {
       transform: translateY(-6px);
       box-shadow: 0 12px 28px rgba(0,0,0,0.4);
     }
-
     .game-thumb {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -72,7 +75,6 @@
       background-position: center;
       position: relative;
     }
-
     .play-overlay {
       position: absolute;
       inset: 0;
@@ -83,30 +85,53 @@
       opacity: 0;
       font-size: 3rem;
       transition: 0.2s ease;
+      color: #fff;
     }
-
     .game-card:hover .play-overlay {
       opacity: 1;
     }
-
     .game-info {
       padding: 12px 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
-
     .game-title {
       font-weight: 600;
       font-size: 0.95rem;
-      margin-bottom: 4px;
+      margin-bottom: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
+    .meta-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      min-width: 60px;
+    }
     .game-meta {
       font-size: 0.75rem;
       color: #9aa0aa;
     }
-
+    .likes {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.03);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .likes .heart {
+      color: #ff6b6b;
+      font-size: 1rem;
+      line-height: 1;
+      margin-left: -2px;
+    }
     .modal-bg {
       position: fixed;
       inset: 0;
@@ -116,7 +141,6 @@
       justify-content: center;
       z-index: 1000;
     }
-
     .modal-window {
       width: 90%;
       max-width: 1000px;
@@ -128,7 +152,6 @@
       overflow: hidden;
       box-shadow: 0 0 30px rgba(0,0,0,0.6);
     }
-
     .modal-header {
       padding: 12px 18px;
       background: #20232d;
@@ -138,27 +161,29 @@
       align-items: center;
       font-weight: 600;
     }
-
     .close-btn {
       cursor: pointer;
       font-size: 1.3rem;
     }
-
     .game-frame {
       width: 100%;
       height: 100%;
       border: none;
       background: #000;
     }
-
     .modal-footer {
       padding: 10px;
       background: #20232d;
       border-top: 1px solid #2a2f3a;
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
-
+    .modal-footer .left {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
     .modal-footer button {
       background: #2c3040;
       border: none;
@@ -168,126 +193,241 @@
       cursor: pointer;
       transition: 0.2s;
     }
-
     .modal-footer button:hover {
       background: #393f55;
+    }
+    @media (max-width:420px) {
+      .meta-col { min-width: 48px; }
+      .game-title { font-size: 0.9rem; }
     }
   </style>
 </head>
 <body>
-
-<header>
-  <h1>Unblocked Games</h1>
-  <p>Instant play. No limits. Just games.</p>
-</header>
-
-<main class="games-wrapper">
-  <div class="games-grid"></div>
-</main>
-
-<script>
-const githubUser = "googledocsalt";
-const githubRepo = "googledocsalt.github.io";
-const githubBranch = "main";
-const gamesFolder = "assets";
-
-const slugify = (str) =>
-  str.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-
-async function findThumbnail(slug) {
-  const possible = ["png", "jpg", "jpeg", "webp"];
-
-  for (const ext of possible) {
-    const local = `${gamesFolder}/${slug}.${ext}`;
-    try {
-      const res = await fetch(local);
-      if (res.ok) return local;
-    } catch {}
-  }
-
-  for (const ext of possible) {
-    const git = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${githubBranch}/assets/${slug}.${ext}`;
-    try {
-      const res = await fetch(git);
-      if (res.ok) return git;
-    } catch {}
-  }
-
-  return "https://via.placeholder.com/300x300?text=No+Image";
-}
-
-async function loadGameFiles() {
-  const api = `https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${gamesFolder}`;
-  const res = await fetch(api);
-  const files = await res.json();
-
-  return files
-    .filter(f => f.name.endsWith(".html"))
-    .map(f => {
-      const slug = f.name.replace(".html", "");
-      const title = slug.replace(/-/g, " ");
-      return { slug, title };
+  <canvas id="stars"></canvas>
+  <div class="site">
+    <header>
+      <h1>Unblocked Games</h1>
+      <p>Instant play. No limits. Just games.</p>
+    </header>
+    <main class="games-wrapper">
+      <div class="games-grid"></div>
+    </main>
+  </div>
+  <script>
+    const githubUser = "googledocsalt";
+    const githubRepo = "googledocsalt.github.io";
+    const githubBranch = "main";
+    const gamesFolder = "assets";
+    const countNamespace = "googledocsalt-games";
+    const starsCanvas = document.getElementById("stars");
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    function setupCanvasSize() {
+      starsCanvas.width = innerWidth * dpr;
+      starsCanvas.height = innerHeight * dpr;
+      starsCanvas.style.width = innerWidth + "px";
+      starsCanvas.style.height = innerHeight + "px";
+    }
+    setupCanvasSize();
+    const ctx = starsCanvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+    let stars = [];
+    function createStars() {
+      const count = Math.round((innerWidth * innerHeight) / 9000);
+      stars = new Array(count).fill(0).map(() => {
+        return {
+          x: Math.random() * innerWidth,
+          y: Math.random() * innerHeight,
+          r: Math.random() * 1.4 + 0.3,
+          speed: Math.random() * 0.25 + 0.05,
+          twinkle: Math.random() * Math.PI * 2
+        };
+      });
+    }
+    function resizeStars() {
+      setupCanvasSize();
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      createStars();
+    }
+    function draw() {
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        s.y += s.speed;
+        s.twinkle += 0.03;
+        if (s.y > innerHeight + 10) s.y = -10;
+        const alpha = 0.55 + Math.sin(s.twinkle) * 0.45;
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    createStars();
+    draw();
+    addEventListener("resize", () => {
+      resizeStars();
     });
-}
-
-function createGameCard(game, thumb) {
-  return `
-    <div class="game-card" onclick="openGame('${game.slug}', '${game.title}')">
-      <div class="game-thumb" style="background-image:url('${thumb}')">
-        <div class="play-overlay">▶</div>
-      </div>
-      <div class="game-info">
-        <div class="game-title">${game.title}</div>
-        <div class="game-meta">Play Now</div>
-      </div>
-    </div>
-  `;
-}
-
-function openGame(slug, title) {
-  const modal = document.createElement("div");
-  modal.className = "modal-bg";
-  modal.innerHTML = `
-    <div class="modal-window">
-      <div class="modal-header">
-        <span>${title}</span>
-        <span class="close-btn" onclick="this.closest('.modal-bg').remove()">✖</span>
-      </div>
-      <iframe src="assets/${slug}.html" class="game-frame"></iframe>
-      <div class="modal-footer">
-        <button onclick="likeGame('${slug}')">👍 Like</button>
-        <button onclick="fullscreenGame(this)">⛶ Fullscreen</button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-}
-
-function fullscreenGame(btn) {
-  const frame = btn.closest(".modal-window").querySelector(".game-frame");
-  if (frame.requestFullscreen) frame.requestFullscreen();
-}
-
-function likeGame(slug) {
-  const key = "likes_" + slug;
-  const total = (localStorage.getItem(key) || 0) * 1 + 1;
-  localStorage.setItem(key, total);
-  alert(`You liked this game! Total likes: ${total}`);
-}
-
-(async () => {
-  const container = document.querySelector(".games-grid");
-  container.innerHTML = `<div style="color:#888;text-align:center;">Loading games…</div>`;
-
-  const games = await loadGameFiles();
-  container.innerHTML = "";
-
-  for (const g of games) {
-    const thumb = await findThumbnail(g.slug);
-    container.innerHTML += createGameCard(g, thumb);
-  }
-})();
-</script>
-
+    async function findThumbnail(slug) {
+      const possible = ["png", "jpg", "jpeg", "webp"];
+      for (const ext of possible) {
+        const local = `${gamesFolder}/${slug}.${ext}`;
+        try {
+          const res = await fetch(local);
+          if (res.ok) return local;
+        } catch {}
+      }
+      for (const ext of possible) {
+        const git = `https://raw.githubusercontent.com/${githubUser}/${githubRepo}/${githubBranch}/assets/${slug}.${ext}`;
+        try {
+          const res = await fetch(git);
+          if (res.ok) return git;
+        } catch {}
+      }
+      return "https://via.placeholder.com/300x300?text=No+Image";
+    }
+    async function loadGameFiles() {
+      const api = `https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${gamesFolder}`;
+      const res = await fetch(api);
+      const files = await res.json();
+      return files
+        .filter(f => f.name && f.name.endsWith(".html"))
+        .map(f => {
+          const slug = f.name.replace(".html", "");
+          const title = slug.replace(/-/g, " ");
+          return { slug, title };
+        });
+    }
+    function createGameCard(game, thumb, likes) {
+      const safeTitle = game.title.replace(/'/g, "\\'");
+      return `
+        <div class="game-card" data-slug="${game.slug}" onclick="openGame('${game.slug}', '${safeTitle}')">
+          <div class="game-thumb" style="background-image:url('${thumb}')">
+            <div class="play-overlay">▶</div>
+          </div>
+          <div class="game-info">
+            <div style="min-width:0">
+              <div class="game-title">${game.title}</div>
+              <div class="game-meta">Play Now</div>
+            </div>
+            <div class="meta-col">
+              <div class="likes"><span class="Likes">👍</span><span class="likes-count">${likes}</span></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    function openGame(slug, title) {
+      const modal = document.createElement("div");
+      modal.className = "modal-bg";
+      modal.innerHTML = `
+        <div class="modal-window">
+          <div class="modal-header">
+            <span>${title}</span>
+            <span class="close-btn" onclick="this.closest('.modal-bg').remove()">✖</span>
+          </div>
+          <iframe src="assets/${slug}.html" class="game-frame"></iframe>
+          <div class="modal-footer">
+            <div class="left">
+              <button id="like-btn" onclick="likeGame('${slug}', this)">👍 Like</button>
+              <div class="likes" id="modal-likes"><span class="heart">👍</span><span class="likes-count">...</span></div>
+            </div>
+            <div>
+              <button onclick="fullscreenGame(this)">⛶ Fullscreen</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      updateModalLikes(slug);
+    }
+    function fullscreenGame(btn) {
+      const frame = btn.closest(".modal-window").querySelector(".game-frame");
+      if (frame && frame.requestFullscreen) frame.requestFullscreen();
+    }
+    async function getGlobalLikes(slug) {
+      try {
+        const res = await fetch(`https://api.countapi.xyz/get/${countNamespace}/${encodeURIComponent(slug)}`);
+        if (!res.ok) return 0;
+        const data = await res.json();
+        return data.value || 0;
+      } catch {
+        return 0;
+      }
+    }
+    async function hitGlobalLike(slug) {
+      try {
+        const res = await fetch(`https://api.countapi.xyz/hit/${countNamespace}/${encodeURIComponent(slug)}`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.value || null;
+      } catch {
+        return null;
+      }
+    }
+    function updateCardLikes(slug, value) {
+      const el = document.querySelector(`.game-card[data-slug="${slug}"] .likes-count`);
+      if (el) el.textContent = value;
+    }
+    async function updateModalLikes(slug) {
+      const el = document.getElementById("modal-likes");
+      if (!el) return;
+      const countEl = el.querySelector(".likes-count");
+      countEl.textContent = "…";
+      const v = await getGlobalLikes(slug);
+      countEl.textContent = v;
+      const likeBtn = document.getElementById("like-btn");
+      if (localStorage.getItem("liked_" + slug)) {
+        if (likeBtn) {
+          likeBtn.disabled = true;
+          likeBtn.textContent = "👍 Liked";
+        }
+      } else {
+        if (likeBtn) {
+          likeBtn.disabled = false;
+          likeBtn.textContent = "👍 Like";
+        }
+      }
+    }
+    async function likeGame(slug, btn) {
+      if (localStorage.getItem("liked_" + slug)) {
+        alert("You already liked this game from this device.");
+        return;
+      }
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "…";
+      }
+      const v = await hitGlobalLike(slug);
+      if (v === null) {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "👍 Like";
+        }
+        alert("Could not register like. Try again later.");
+        return;
+      }
+      localStorage.setItem("liked_" + slug, "1");
+      updateCardLikes(slug, v);
+      const modalLikesEl = document.getElementById("modal-likes");
+      if (modalLikesEl) modalLikesEl.querySelector(".likes-count").textContent = v;
+      if (btn) btn.textContent = "👍 Liked";
+      alert(`Thanks! Total likes: ${v}`);
+    }
+    (async () => {
+      const container = document.querySelector(".games-grid");
+      container.innerHTML = `<div style="color:#888;text-align:center;">Loading games…</div>`;
+      const games = await loadGameFiles();
+      container.innerHTML = "";
+      const likesPromises = games.map(g => getGlobalLikes(g.slug));
+      const likesResults = await Promise.all(likesPromises);
+      for (let i = 0; i < games.length; i++) {
+        const g = games[i];
+        const thumb = await findThumbnail(g.slug);
+        const likes = likesResults[i] || 0;
+        container.innerHTML += createGameCard(g, thumb, likes);
+      }
+    })();
+  </script>
 </body>
 </html>
